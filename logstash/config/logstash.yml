@@ -1,0 +1,23 @@
+---
+## Default Logstash configuration from logstash-docker.
+## from https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash.yml
+#
+http.host: "0.0.0.0"
+http.port: "9600"
+path.data: "/var/data/logstash"
+path.plugins:
+  - /usr/share/logstash/plugins
+
+log.level: "warn"
+log.format: "json"
+path.logs: "/var/log/logstash"
+
+pipeline.workers: 2
+queue.type: "persisted"
+queue.max_bytes: 1gb
+
+## Disable X-Pack
+## see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+##     https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html#xpack-enabling
+#
+xpack.monitoring.enabled: false

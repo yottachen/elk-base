@@ -1,0 +1,80 @@
+version: '3'
+services:
+  filebeat:
+    #build: filebeat/
+    image: docker.elastic.co/beats/filebeat:5.2.2
+    networks:
+      - elknet
+    depends_on:
+      - es
+    volumes:
+      - ./es/logs:/var/log/eslog
+      - ./filebeat/data:/usr/share/filebeat/data
+      - ./filebeat/logs:/usr/share/filebeat/logs
+      - ./filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
+  kibana:
+    build: kibana/
+    #image: docker.elastic.co/kibana/kibana:5.2.2
+    ports:
+      - "5601:5601"
+    networks:
+      - elknet
+    depends_on:
+      - es
+    environment:
+      ELASTICSEARCH_URL: "http://es:9200"
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+  logstash:
+    build: logstash/
+    #image: docker.elastic.co/logstash/logstash:5.2.2
+    ports:
+      - "5000:5000"
+      #- "9600:9600"
+    networks:
+      - elknet
+    logging:
+      driver: "none"
+    depends_on:
+      - es
+    environment:
+      ELASTICSEARCH_URL: "http://es:9200"
+    volumes:
+      - ./logstash/logs:/var/log/logstash
+      - ./logstash/data:/var/data/logstash
+      - ./logstash/plugins:/usr/share/logstash/plugins
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/config/log4j2.properties:/usr/share/logstash/config/log4j2.properties
+  es:
+    build: es/
+    # image: docker.elastic.co/elasticsearch/elasticsearch:5.2.2
+    # container_name: elkbase_es1_1
+    networks:
+      - elknet
+    logging:
+      driver: "none"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    cap_add:
+      - IPC_LOCK
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    environment:
+      cluster.name: "elk-cluster"
+      bootstrap.memory_lock: "true"
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    volumes:
+      - ./es/logs:/var/log/elasticsearch
+      - ./es/data:/var/data/elasticsearch
+      - ./es/config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
+      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+networks:
+  elknet:
+    driver: bridge
