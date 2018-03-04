@@ -7,6 +7,7 @@ services:
       - elknet
     depends_on:
       - es
+      - logstash
     volumes:
       - ./es/logs:/var/log/eslog
       - ./filebeat/data:/usr/share/filebeat/data
@@ -29,8 +30,8 @@ services:
     build: logstash/
     #image: docker.elastic.co/logstash/logstash:5.2.2
     ports:
-      - "5000:5000"
-      #- "9600:9600"
+      # - "5000:5000"
+      - "5044:5044"
     networks:
       - elknet
     logging:

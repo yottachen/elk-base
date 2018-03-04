@@ -21,10 +21,14 @@ filebeat.prospectors:
 #  env: staging
 
 #================================ Outputs =====================================
-output.elasticsearch:
-  hosts: ["http://es:9200"]
-  template.overwrite: false
+# output.elasticsearch:
+#   hosts: ["http://es:9200"]
+#   template.overwrite: false
   #pipeline: ""
   #protocol: "http"
   #username: "elastic"
   #password: "changeme"
+
+output.logstash:
+  hosts: ["logstash:5043"]
+  template.overwrite: false

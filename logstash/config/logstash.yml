@@ -3,7 +3,7 @@
 ## from https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash.yml
 #
 http.host: "0.0.0.0"
-http.port: "9600"
+http.port: "5044"
 path.data: "/var/data/logstash"
 path.plugins:
   - /usr/share/logstash/plugins
