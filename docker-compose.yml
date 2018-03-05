@@ -10,6 +10,7 @@ services:
       - logstash
     volumes:
       - ./es/logs:/var/log/eslog
+      - /Users/yychen/logs/:/var/log/app
       - ./filebeat/data:/usr/share/filebeat/data
       - ./filebeat/logs:/usr/share/filebeat/logs
       - ./filebeat/config/filebeat.yml:/usr/share/filebeat/filebeat.yml
